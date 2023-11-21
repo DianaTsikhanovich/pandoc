@@ -33,10 +33,32 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
         
-          - name: Install soft
+      - name: Install soft
           run: |
           sudo apt update
           sudo apt Install soft
+          pandoc lr1.md -o lr1.docx
+          pandoc lr1.md -o lr1.pdf --pdf-engine-xelatex-V mainfont-"Liberalion Serif"
+          zip --junk-paths lr1 lr1.docx lr1.md lr1pdf
           
+      -name: Create Release
+          id: create release
+          uses: actions/create-reales@v1
+          env:
+          GITHUB TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+          release name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+       -name: Upload Create Asset
+          id: Upload-Create-Asset
+          uses: actions/Upload-Create-Asset@v1
+          env:
+          GITHUB TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+          upload url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./lr1
+          asset
           
       
